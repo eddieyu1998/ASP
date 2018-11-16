@@ -1,4 +1,7 @@
 # ASP
+>Any good way to indicate who is working on what to avoid concurrency?
+
+
 TO-DO: (arranged by importance)
 - [ ] Registration
   - create new model for Registration information
