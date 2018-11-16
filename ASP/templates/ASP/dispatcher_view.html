@@ -1,0 +1,27 @@
+<style>
+    th, td { border: 1px solid black; }
+</style>
+
+<h1>Orders to be loaded on next drone</h1>
+<form action="{% url 'ASP:getDispatcherAction' %}" method="post">
+{% csrf_token %}
+	<table>
+		<tr>
+			<td>order id</td>
+			<td>order status</td>
+			<td>order priority</td>
+			<td>deliver to</td>
+		</tr>
+	{% for order in next_drone_orders %}
+		<tr>
+			<input type="hidden" name="order" value="{{ order.id }}">
+			<td>{{ order.id }}</td>
+			<td>{{ order.status }}</td>
+			<td>{{ order.priority }}</td>
+			<td>{{ order.owner.clinic.name }}</td>
+		</tr>
+	{% endfor %}
+	</table>
+	<input type="submit" name="csv" value="Get CSV">
+	<input type="submit" name="update_status" value="Update statuses">
+</form>

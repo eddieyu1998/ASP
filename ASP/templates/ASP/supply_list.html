@@ -1,0 +1,46 @@
+<style>
+    th, td { border: 1px solid black; }
+</style>
+
+<h1>Browse</h1>
+<div style="float: left; margin-right: 10px">
+	<form action="{% url 'ASP:browse' %}" method="post">
+	{% csrf_token %}
+		category: 
+		<select name="category" onchange="this.form.submit()">
+			<option value="all" {% if category == 'all' %} selected="selected" {% endif %}>all</option>
+			<option value="IV fluid" {% if category == 'IV fluid' %} selected="selected" {% endif %}>IV fluid</option>
+		</select>
+	</form>
+</div>
+<div style="float: left; margin-right: 10px">
+	<form action="{% url 'ASP:browse' %}" method="post">
+	{% csrf_token %}
+		<input type="text" name="search" required>
+		<input type="submit" value="Search">
+	</form>
+</div>
+<div>
+    <form action="{% url 'ASP:checkout' %}" method="post">
+    {% csrf_token %}
+        <input type="submit" value="checkout">
+    </form>
+</div>
+<table>
+  <tr><th>name</th><th>category</th><th>weight(kg)</th></tr>
+  {% for item in object_list %}
+    <tr>
+        <td>{{ item.name }}</td>
+    	<td>{{ item.category }}</td>
+    	<td>{{ item.weight }}</td>
+    	<td>
+    		<form action="{% url 'ASP:addItem' %}" method="post">
+    		{% csrf_token %}
+    			<input type="hidden" name="supplyID" value="{{ item.id }}">
+    			<input type="number" name="qty" min="1" max="100" required>
+    			<input type="submit" value="select">
+    		</form>
+    	</td>
+	</tr>
+  {% endfor %}
+</table>
