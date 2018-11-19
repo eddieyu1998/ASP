@@ -16,7 +16,7 @@ class Supply(models.Model):
 	name = models.CharField(max_length=200)
 	category = models.CharField(max_length=200)
 	weight = models.DecimalField(max_digits=5, decimal_places=2)
-	image = models.CharField(max_length=200, blank=True)
+	image = models.ImageField(default = "default.png", blank=True)
 	def __str__(self):
 		return f'{self.name}'
 
@@ -25,7 +25,7 @@ class Order(models.Model):
 	priority = models.CharField(max_length=200, blank=True)
 	status = models.CharField(max_length=200)
 	placeTime = models.DateTimeField(default=datetime.now())
-	dispatchTime = models.DateTimeField(default=datetime.now())	
+	dispatchTime = models.DateTimeField(default=datetime.now())
 	def __str__(self):
 		return f'{self.pk}'
 	def __lt__(self, other):
