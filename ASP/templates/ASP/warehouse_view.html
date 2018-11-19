@@ -1,0 +1,27 @@
+<style>
+    th, td { border: 1px solid black; }
+</style>
+
+<h1>Orders to be processed</h1>
+<a href="{% url 'ASP:process' %}">Process</a><br><br>
+
+<table>
+	<tr>
+		<td>order id</td>
+		<td>order status</td>
+		<td>order priority</td>
+	</tr>
+	<tr>
+		<td>{{ top_order.id }}</td>
+		<td>{{ top_order.status }}</td>
+		<td>{{ top_order.priority }}</td>
+		<td><input type="submit" name="process" value="Process"></td>
+	</tr>
+	{% for order in orders %}
+	<tr>
+		<td>{{ order.id }}</td>
+		<td>{{ order.status }}</td>
+		<td>{{ order.priority }}</td>
+	</tr>
+	{% endfor %}
+</table>

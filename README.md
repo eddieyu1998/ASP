@@ -1,6 +1,5 @@
 # ASP
->Any good way to indicate who is working on what to avoid concurrency?
-
+>Fill in the form in the google sheet to indicate who is working on what and avoid concurrency
 
 TO-DO: (arranged by importance)
 - [ ] Registration
@@ -11,8 +10,8 @@ TO-DO: (arranged by importance)
   - view function for login page(with corresponding routing)
   - html template
 - [ ] Warehouse Order Processing (see the original prototype for a rough idea)
-  - [ ] create new model for Warehouse Personnel
-  - [ ] view function for: view the priority queue
+  - [x] create new model for Warehouse Personnel
+  - [x] view function for: view the priority queue
     - routing
     - html template
   - [ ] view function for: remove order from the top of the queue(status changes from Queued for Processing to Processing by Warehouse)

@@ -15,17 +15,28 @@ class ClinicManager(models.Model):
 class Supply(models.Model):
 	name = models.CharField(max_length=200)
 	category = models.CharField(max_length=200)
+<<<<<<< HEAD
 	weight = models.DecimalField(max_digits=5, decimal_places=2)
 	image = models.ImageField(default = "default.png", blank=True)
+=======
+	weight = models.DecimalField(max_digits=4, decimal_places=2)
+	image = models.CharField(max_length=200, blank=True)
+	description = models.CharField(max_length=200, blank=True)
+>>>>>>> e312dd8ac0d94755758fc751d24ffd8a464a0235
 	def __str__(self):
 		return f'{self.name}'
 
 class Order(models.Model):
 	owner = models.ForeignKey(ClinicManager, on_delete=models.CASCADE)
 	priority = models.CharField(max_length=200, blank=True)
+	weight = models.DecimalField(max_digits=4, decimal_places=2, default=0.00)
 	status = models.CharField(max_length=200)
 	placeTime = models.DateTimeField(default=datetime.now())
 	dispatchTime = models.DateTimeField(default=datetime.now())
+<<<<<<< HEAD
+=======
+	deliveredTime = models.DateTimeField(default=datetime.now())
+>>>>>>> e312dd8ac0d94755758fc751d24ffd8a464a0235
 	def __str__(self):
 		return f'{self.pk}'
 	def __lt__(self, other):
@@ -69,3 +80,14 @@ class DistanceBetweenClinic(models.Model):
 	clinic1 = models.ForeignKey(Clinic, on_delete=models.CASCADE, related_name='clinic1')
 	clinic2 = models.ForeignKey(Clinic, on_delete=models.CASCADE, related_name='clinic2')
 	distance = models.DecimalField(max_digits=6, decimal_places=2)
+<<<<<<< HEAD
+=======
+
+class WarehousePersonnel(models.Model):
+	firstName = models.CharField(max_length=200)
+	lastName = models.CharField(max_length=200)
+	password = models.CharField(max_length=200)
+	email = models.CharField(max_length=200)
+	def __str__(self):
+		return f'{self.firstName} {self.lastName}'
+>>>>>>> e312dd8ac0d94755758fc751d24ffd8a464a0235
