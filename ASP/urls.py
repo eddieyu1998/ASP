@@ -11,4 +11,6 @@ urlpatterns = [
 	path('placeOrder', views.placeOrder, name='placeOrder'),
 	path('dispatcherView', views.dispatcherView, name='dispatcherView'),
 	path('getDispatcherAction', views.getDispatcherAction, name="getDispatcherAction"),
+	path('warehouseView', views.warehouseView, name='warehouseView'),
+	path('process', views.process, name='process'),
 ]

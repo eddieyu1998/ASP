@@ -79,31 +79,29 @@ def placeOrder(request):
 		return HttpResponse("Order placed!<br><a href=\"browse\">Go back</a>")
 
 def dispatcherView(request):
-		orders = Order.objects.filter(status="Queued for Processing")
-		if not orders:
-			orders = Order.objects.filter(status="Queued for dispatch")
-			if not orders:
-				return HttpResponse("There is currently no order.<br><a href=\"dispatcherView\">Refresh</a>")
-		priority_queue = []
-		for order in orders:
-			heappush(priority_queue, order)
-		print(priority_queue)
-		next_drone_orders = []
-		weight_limit = Decimal(25.00)
-		current_weight = Decimal(0.00)
-		while priority_queue:
-			next_order = heappop(priority_queue)
-			order_weight = Decimal(0.00)
-			for item in OrderDetail.objects.filter(orderID=next_order):
-				order_weight +=  item.quantity * item.supplyID.weight
-			order_weight += Decimal(1.20)
-			if current_weight + order_weight > weight_limit:
-				break
-			else:
-				next_drone_orders.append(next_order)
-				current_weight += order_weight
-		template_name = 'ASP/dispatcher_view.html'
-		return render(request, template_name, {'next_drone_orders': next_drone_orders})
+	orders = Order.objects.filter(status="Queued for Dispatch")
+	if not orders:
+		return HttpResponse("There is currently no order.<br><a href=\"dispatcherView\">Refresh</a>")
+	priority_queue = []
+	for order in orders:
+		heappush(priority_queue, order)
+	#print(priority_queue)
+	next_drone_orders = []
+	weight_limit = Decimal(25.00)
+	current_weight = Decimal(0.00)
+	while priority_queue:
+		next_order = heappop(priority_queue)
+		order_weight = Decimal(0.00)
+		for item in OrderDetail.objects.filter(orderID=next_order):
+			order_weight +=  item.quantity * item.supplyID.weight
+		order_weight += Decimal(1.20)
+		if current_weight + order_weight > weight_limit:
+			break
+		else:
+			next_drone_orders.append(next_order)
+			current_weight += order_weight
+	template_name = 'ASP/dispatcher_view.html'
+	return render(request, template_name, {'next_drone_orders': next_drone_orders})
 
 def getDispatcherAction(request):
 	orders = request.POST.getlist('order')	#orders here is a list of order id
@@ -169,3 +167,17 @@ def isGoalState(stateSequence, numOfStates):
 		return True
 	else:
 		return False
+
+def warehouseView(request):
+	orders = Order.objects.filter(status="Queued for Processing")
+	if not orders:
+		return HttpResponse("There is currently no order.<br><a href=\"warehouseView\">Refresh</a>")
+	priority_queue = []
+	for order in orders:
+		heappush(priority_queue, order)
+	top_order = heappop(priority_queue)
+	template_name = 'ASP/warehouse_view.html'
+	return render(request, template_name, {'top_order': top_order, 'orders': priority_queue})
+
+def process(request):
+	return HttpResponse("<a href=\"warehouseView\">Return, process function not yet implemented</a>")
