@@ -2,6 +2,8 @@
   th, td { border: 1px solid black; }
 </style>
 
+
+<!DOCTYPE html>
 <h1>Your current order</h1>
 <a href="{% url 'ASP:browse' %}">return to selecting supplies</a><br><br>
 <table>
@@ -13,8 +15,14 @@
 			<td>{{ order_detail.quantity }}</td>
 			<td>{{ weight }}</td>
 		</tr>
-	{% endfor %}
+
+{% endfor %}
 </table>
+
+<p>The total weight of your order is: {{Total_Weight}} (kg)</p>
+
+
+
 <br><br>
 <div>
 	<form action="{% url 'ASP:placeOrder' %}" method="post">
@@ -28,4 +36,10 @@
 		<input type="hidden" name="orderID" value="{{ current_order.id }}">
 		<input type="submit" value="Place Order">
 	</form>
+	<form action="{% url 'ASP:resetOrder' %}" method="post">
+     {% csrf_token %}
+		<input type="submit" value="Reset Order">
+	</form>
+
 </div>
+</html>
