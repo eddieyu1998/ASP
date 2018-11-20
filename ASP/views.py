@@ -35,7 +35,6 @@ class browse(View):
 
 """class browseSupply(ListView):
 	model = Supply
-
 	def get_queryset(self):
 		self.category = self.kwargs['category']
 		return Supply.objects.filter(category=self.category)"""
@@ -56,13 +55,22 @@ def checkout(request):
 	except Order.DoesNotExist:
 		return HttpResponse("Your current order is empty<br><a href=\"browse\">Go back</a>")
 	else:
+		total_weight = 0
+		message= "OVERWEIGHT. Please Reset Order"
 		items = OrderDetail.objects.filter(orderID=current_order)
 		template_name = 'ASP/checkout.html'
 		order_details = []
 		for item in items:
 			weight = item.supplyID.weight * item.quantity
 			order_details.append((item, weight))
-		return render(request, template_name, {'order_details': order_details, 'current_order': current_order})
+			total_weight +=weight
+		total_weight= float(total_weight)+1.2
+		if total_weight <25:
+		    return render(request, template_name, {'order_details': order_details, 'current_order': current_order,'Total_Weight': total_weight})
+		else:
+			return render(request, template_name, {'order_details': order_details, 'current_order': current_order,'Total_Weight': message})
+
+  
 
 def placeOrder(request):
 	order_id = request.POST['orderID']
@@ -77,6 +85,11 @@ def placeOrder(request):
 		current_order.placeTime = datetime.now()
 		current_order.save()
 		return HttpResponse("Order placed!<br><a href=\"browse\">Go back</a>")
+
+def resetOrder(request):
+	ord = Order.objects.filter(owner=1).get(status="pre-place")
+	ord.delete()
+	return HttpResponse("Your order has been removed!<br><a href=\"browse\">Go back</a>")
 
 def dispatcherView(request):
 	orders = Order.objects.filter(status="Queued for Dispatch")
@@ -167,8 +180,7 @@ def isGoalState(stateSequence, numOfStates):
 		return True
 	else:
 		return False
-<<<<<<< HEAD
-=======
+
 
 def warehouseView(request):
 	orders = Order.objects.filter(status="Queued for Processing")
@@ -183,4 +195,3 @@ def warehouseView(request):
 
 def process(request):
 	return HttpResponse("<a href=\"warehouseView\">Return, process function not yet implemented</a>")
->>>>>>> e312dd8ac0d94755758fc751d24ffd8a464a0235
