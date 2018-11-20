@@ -272,22 +272,22 @@ def registerUser(request):
 	return HttpResponse("Registration success")
 
 def getWarehouseAction(request):
-	order = request.POST['orderID']
+	order_id = request.POST['orderID']
 	location = request.POST['location']
 	if request.POST.get('getShippingLabel', False):
 		names = request.POST.getlist('supplyName')
 		quantity = request.POST.getlist('quantity')
 		details = zip(names, quantity)
-		response = getShippingLabel(order, location, details)
+		response = getShippingLabel(order_id, location, details)
 		return response
 	else:
-		updateStatuses(orders)
-		return HttpResponse("All order statuses have been updated<br><a href=\"dispatcherView\">Go back</a>")
+		warehouseUpdateStatuses(order_id)
+		return HttpResponse("Order status have been updated<br><a href=\"process\">Go back</a>")
 
-def getShippingLabel(order, location, details):
+def getShippingLabel(order_id, location, details):
 	buffer = io.BytesIO()
 	p = canvas.Canvas(buffer)
-	p.drawString(80, 800, "order id: "+str(order))
+	p.drawString(80, 800, "order id: "+str(order_id))
 	p.drawString(80, 775, "location: "+location)
 	p.drawString(80, 725, "list of items:")
 	y = 700
@@ -302,3 +302,9 @@ def getShippingLabel(order, location, details):
 	response['Content-Disposition'] = 'attachment; filename="shippinglabel.pdf"'
 	response.write(pdf)
 	return response
+
+def warehouseUpdateStatuses(order_id):
+	order = Order.objects.get(pk=order_id)
+	order.status = "Queued for Dispatch"
+	order.save()
+	return
