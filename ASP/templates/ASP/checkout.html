@@ -7,13 +7,21 @@
 <h1>Your current order</h1>
 <a href="{% url 'ASP:browse' %}">return to selecting supplies</a><br><br>
 <table>
-	<tr><th>name</th><th>item weight(kg)</th><th>qty</th><th>total weight(kg)</th></tr>
+	<tr><th>name</th><th>item weight(kg)</th><th>qty</th><th>total weight(kg)</th><th>Change Quantity</th><th>Modify</th></tr>
 	{% for order_detail, weight in order_details %}
 		<tr>
+			<form action="{%url 'ASP:changeQuantity' %}" method="post" >
+				{% csrf_token %}
+				{{ order_detail.supplyID.quantity }}
 			<td>{{ order_detail.supplyID.name }}</td>
 			<td>{{ order_detail.supplyID.weight }}</td>
 			<td>{{ order_detail.quantity }}</td>
 			<td>{{ weight }}</td>
+			<td><input type="text" name="quantity"></td>
+			<td><input type="submit" value="confirm"></td>
+			<input type="hidden" name="supply_id" value="{{order_detail.supplyID.pk}}"> 
+
+	</form>
 		</tr>
 
 {% endfor %}
