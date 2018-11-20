@@ -139,8 +139,19 @@ def resetOrder(request):
 	ord.delete()
 	return HttpResponse("Your order has been removed!<br><a href=\"browse/"+manager_id+"\">Go back</a>")
 
-
-
+def delivered(request):
+	manager_id = request.POST.get('manager_id')
+	owner = ClinicManager.objects.get(pk=manager_id)
+	order_id = request.POST.get('order_id')
+	try:
+		order = Order.objects.get(pk=order_id, owner=owner)
+	except Order.DoesNotExist:
+		return HttpResponse("Order number not found.<br><a href=\"browse/"+manager_id+"\">Return</a>")
+	else:
+		order.status = "Delivered"
+		order.deliveredTime = datetime.now()
+		order.save()
+		return HttpResponse("Order status has been updated to deliverd.<br><a href=\"browse/"+manager_id+"\">Return</a>")
 
 def dispatcherView(request):
 	orders = Order.objects.filter(status="Queued for Dispatch")

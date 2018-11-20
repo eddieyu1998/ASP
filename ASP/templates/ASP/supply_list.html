@@ -22,11 +22,19 @@
 		<input type="submit" value="Search">
 	</form>
 </div>
-<div>
+<div style="float: left; margin-right: 50px">
     <form action="{% url 'ASP:checkout' %}" method="post">
     {% csrf_token %}
         <input type="hidden" name="manager_id" value="{{ manager_id }}">
         <input type="submit" value="checkout">
+    </form>
+</div>
+<div>
+    <form action="{% url 'ASP:delivered' %}" method="post">
+    {% csrf_token %}
+        order id: <input type="number" name="order_id" min="1" required  style="width:70px">
+        <input type="hidden" name="manager_id" value="{{manager_id}}">
+        <input type="submit" value="update">   
     </form>
 </div>
 <table>
