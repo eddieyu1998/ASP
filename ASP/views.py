@@ -190,10 +190,9 @@ def warehouseView(request):
 	template_name = 'ASP/warehouse_view.html'
 	if not orders:
 		return render(request, template_name, {'top_order': [], 'orders': []})
-	priority_queue = []
-	for order in orders:
-		heappush(priority_queue, order)
-	top_order = heappop(priority_queue)
+	priority_queue = list(orders)
+	priority_queue.sort()
+	top_order = priority_queue.pop(0)
 	return render(request, template_name, {'top_order': top_order, 'orders': priority_queue})
 
 def removeTopForProcess(request):
@@ -205,13 +204,13 @@ def removeTopForProcess(request):
 def process(request):
 	orders = Order.objects.filter(status="Processing by Warehouse")
 	if not orders:
-		return HttpResponse("<a href=\"warehouseView\">Return, no orders to be processed</a>")
+		return HttpResponse("<a href=\"warehouseView\">Return, no more removed orders for packing</a>")
 	priority_queue = []
 	for order in orders:
 		details = order.orderdetail_set.all()
 		location = order.owner.clinic.name
-		heappush(priority_queue, (order, location, details))
-	print(priority_queue)
+		priority_queue.append((order, location, details))
+	priority_queue.sort()
 	template_name = "ASP/process.html"
 	return render(request, template_name, {'orders': priority_queue})
 
