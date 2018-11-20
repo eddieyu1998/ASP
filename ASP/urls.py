@@ -20,4 +20,5 @@ urlpatterns = [
 	path('registration/<int:invitation_id>', views.registration, name='registration'),
 	path('addInvitation', views.addInvitation, name='addInvitation'),
 	path('registerUser', views.registerUser, name="registerUser"),
+	path('getWarehouseAction', views.getWarehouseAction, name="getWarehouseAction"),
 ]

@@ -1,0 +1,27 @@
+<style>
+    th, td { border: 1px solid black; }
+</style>
+
+<h1>Pick and pack</h1>
+<a href="{% url 'ASP:warehouseView' %}">Go back to view orders</a><br><br>
+{% for order, location, details in orders %}
+<div>
+<form action="{% url 'ASP:getWarehouseAction' %}" method="post">
+{% csrf_token %}
+	orderID: {{ order.id }}  priority: {{ order.priority }}
+	<table>
+		<tr><th>supply name</th><th>quantity</th></tr>
+		{% for detail in details %}
+		<input type="hidden" name="supplyName" value="{{ detail.supplyID.name }}">
+		<input type="hidden" name="quantity" value="{{ detail.quantity }}">
+		<tr><td>{{ detail.supplyID.name }}</td><td>{{ detail.quantity }}</td></tr>
+		{% endfor %}
+	</table>
+	<input type="hidden" name="orderID" value="{{ order.id }}">
+	<input type="hidden" name="location" value="{{ location }}">
+	<input type="submit" name="getShippingLabel" value="get shipping label">
+	<input type="submit" name="updateStatus" value="update status">
+</form>
+</div>
+<br>
+{% endfor %}

@@ -7,6 +7,9 @@ from datetime import datetime
 from heapq import heappush, heappop
 from decimal import *
 import csv
+import reportlab	#for generating PDF, please run "pip install reportlab" in the virtual env
+from reportlab.pdfgen import canvas
+import io
 
 from ASP.models import *
 
@@ -184,10 +187,10 @@ def isGoalState(stateSequence, numOfStates):
 
 def warehouseView(request):
 	orders = Order.objects.filter(status="Queued for Processing")
-	priority_queue = []
 	template_name = 'ASP/warehouse_view.html'
 	if not orders:
 		return render(request, template_name, {'top_order': [], 'orders': []})
+	priority_queue = []
 	for order in orders:
 		heappush(priority_queue, order)
 	top_order = heappop(priority_queue)
@@ -200,7 +203,17 @@ def removeTopForProcess(request):
 	return HttpResponseRedirect(reverse('ASP:warehouseView'))
 
 def process(request):
-	return HttpResponse("<a href=\"warehouseView\">Return, process function not yet implemented</a>")
+	orders = Order.objects.filter(status="Processing by Warehouse")
+	if not orders:
+		return HttpResponse("<a href=\"warehouseView\">Return, no orders to be processed</a>")
+	priority_queue = []
+	for order in orders:
+		details = order.orderdetail_set.all()
+		location = order.owner.clinic.name
+		heappush(priority_queue, (order, location, details))
+	print(priority_queue)
+	template_name = "ASP/process.html"
+	return render(request, template_name, {'orders': priority_queue})
 
 def admin(request):
 	invitations = Invitation.objects.all()
@@ -257,3 +270,35 @@ def registerUser(request):
 		return HttpResponse("Error, cannot register")
 	invitation = Invitation.objects.filter(email=email).delete()
 	return HttpResponse("Registration success")
+
+def getWarehouseAction(request):
+	order = request.POST['orderID']
+	location = request.POST['location']
+	if request.POST.get('getShippingLabel', False):
+		names = request.POST.getlist('supplyName')
+		quantity = request.POST.getlist('quantity')
+		details = zip(names, quantity)
+		response = getShippingLabel(order, location, details)
+		return response
+	else:
+		updateStatuses(orders)
+		return HttpResponse("All order statuses have been updated<br><a href=\"dispatcherView\">Go back</a>")
+
+def getShippingLabel(order, location, details):
+	buffer = io.BytesIO()
+	p = canvas.Canvas(buffer)
+	p.drawString(80, 800, "order id: "+str(order))
+	p.drawString(80, 775, "location: "+location)
+	p.drawString(80, 725, "list of items:")
+	y = 700
+	for detail in details:
+		p.drawString(80, y, detail[0]+": "+str(detail[1]))
+		y -= 25
+	p.showPage()
+	p.save()
+	pdf = buffer.getvalue()
+	buffer.close()
+	response = HttpResponse(content_type='application/pdf')
+	response['Content-Disposition'] = 'attachment; filename="shippinglabel.pdf"'
+	response.write(pdf)
+	return response
