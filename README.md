@@ -1,6 +1,9 @@
 # ASP
 >Fill in the form in the google sheet to indicate who is working on what and avoid concurrency
 
+
+`$ pip install Pillow` `$ pip install reportlab` in the virtual env 
+
 TO-DO: (arranged by importance)
 - [x] Registration
   - create new model for Registration information
@@ -24,7 +27,7 @@ TO-DO: (arranged by importance)
     - routing
     - generate PDF(as http response?)
   - [x] view function for: update order status(status changes from Processing by Warehouse to Queued for Processing)
-- [ ] Clinic manager: View Orders
+- [x] Clinic manager: View Orders
   - view function for: view the placed orders
     - routing
     - html template
