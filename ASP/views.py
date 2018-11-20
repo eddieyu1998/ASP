@@ -56,7 +56,7 @@ def checkout(request):
 		return HttpResponse("Your current order is empty<br><a href=\"browse\">Go back</a>")
 	else:
 		total_weight = 0
-		message= "OVERWEIGHT"
+		message= "OVERWEIGHT. Please Reset Order"
 		items = OrderDetail.objects.filter(orderID=current_order)
 		template_name = 'ASP/checkout.html'
 		order_details = []
