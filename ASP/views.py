@@ -69,7 +69,7 @@ def checkout(request):
 			total_weight +=weight
 		total_weight= float(total_weight)+1.2
 		if total_weight <25:
-		    return render(request, template_name, {'order_details': order_details, 'current_order': current_order,'Total_Weight': total_weight})
+		    return render(request, template_name, {'order_details': order_details, 'current_order': current_order,'Total_Weight': round(total_weight,2)})
 		else:
 			return render(request, template_name, {'order_details': order_details, 'current_order': current_order,'Total_Weight': message})
 
