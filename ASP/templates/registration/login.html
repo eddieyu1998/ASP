@@ -46,6 +46,7 @@ Login fail
 {% endif %}
 
 <form action="{% url 'ASP:login' %}" method="post">
+{% csrf_token %}
 username: <input type="text" name="username" required><br>
 password: <input type="password" name="password" required><br>
 <input type="submit" value="login">

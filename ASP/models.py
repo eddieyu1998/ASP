@@ -11,7 +11,7 @@ class ClinicManager(models.Model):
 	password = models.CharField(max_length=200)
 	email = models.CharField(max_length=200)
 	def __str__(self):
-		return f'{self.firstName} {self.lastName}'
+		return f'{self.pk} {self.firstName} {self.lastName}'
 
 class Supply(models.Model):
 	name = models.CharField(max_length=200)

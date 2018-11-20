@@ -25,9 +25,11 @@ class browse(View):
 
 	def get(self, request, *args, **kwargs):
 		objects = self.model.objects.all()
-		return render(request, self.template_name, {'object_list' : objects})
+		manager_id = self.kwargs['id']
+		return render(request, self.template_name, {'manager_id': manager_id, 'object_list' : objects})
 
 	def post(self, request, *args, **kwargs):
+		manager_id = request.POST.get('id')
 		category = request.POST.get('category', False)
 		search = request.POST.get('search', False)
 		if search:
@@ -36,7 +38,7 @@ class browse(View):
 			objects = self.model.objects.all()
 		else:
 			objects = self.model.objects.filter(category=category)
-		return render(request, self.template_name, {'object_list' : objects, 'category' : category})
+		return render(request, self.template_name, {'manager_id': manager_id, 'object_list' : objects, 'category' : category})
 
 """class browseSupply(ListView):
 	model = Supply
@@ -45,20 +47,29 @@ class browse(View):
 		return Supply.objects.filter(category=self.category)"""
 
 def addItem(request):
+	manager_id = request.POST.get('manager_id')
+	owner = ClinicManager.objects.get(pk=manager_id)
 	selected_supply = Supply.objects.get(pk=request.POST['supplyID'])
 	qty = request.POST['qty']
 	try:
-		current_order = Order.objects.filter(owner=1).get(status="pre-place")
+		current_order = Order.objects.filter(owner=owner).get(status="pre-place")
 	except Order.DoesNotExist:
-		current_order = Order.objects.create(owner=ClinicManager.objects.get(pk=1), status="pre-place")
-	order_detail = OrderDetail.objects.create(orderID=current_order, supplyID=selected_supply, quantity=qty)
-	return HttpResponseRedirect(reverse('ASP:browse'))
+		current_order = Order.objects.create(owner=owner, status="pre-place")
+	try:
+		previous_select = OrderDetail.objects.get(orderID=current_order, supplyID=selected_supply)
+	except OrderDetail.DoesNotExist:
+		order_detail = OrderDetail.objects.create(orderID=current_order, supplyID=selected_supply, quantity=qty)
+	else:
+		previous_select.quantity += qty
+	return HttpResponseRedirect('browse/'+manager_id)
 
 def checkout(request):
+	manager_id = request.POST.get('manager_id')
+	owner = ClinicManager.objects.get(pk=manager_id)
 	try:
-		current_order = Order.objects.filter(owner=1).get(status="pre-place")
+		current_order = Order.objects.filter(owner=owner).get(status="pre-place")
 	except Order.DoesNotExist:
-		return HttpResponse("Your current order is empty<br><a href=\"browse\">Go back</a>")
+		return HttpResponse("Your current order is empty<br><a href=\"browse/"+manager_id+"\">Go back</a>")
 	else:
 		total_weight = 0
 		message= "OVERWEIGHT. Please Reset Order"
@@ -71,23 +82,45 @@ def checkout(request):
 			total_weight +=weight
 		total_weight= float(total_weight)+1.2
 		if total_weight <25:
-			return render(request, template_name, {'order_details': order_details, 'current_order': current_order,'Total_Weight': round(total_weight,2)})
+			return render(request, template_name, {'manager_id': manager_id, 'order_id': current_order.id, 'order_details': order_details, 'current_order': current_order,'Total_Weight': round(total_weight,2)})
 		else:
-			return render(request, template_name, {'order_details': order_details, 'current_order': current_order,'Total_Weight': message})
+			return render(request, template_name, {'manager_id': manager_id, 'order_id': current_order.id, 'order_details': order_details, 'current_order': current_order,'Total_Weight': message})
 
+def checkout_get(request, manager_id):
+	owner = ClinicManager.objects.get(pk=manager_id)
+	try:
+		current_order = Order.objects.filter(owner=owner).get(status="pre-place")
+	except Order.DoesNotExist:
+		return HttpResponse("Your current order is empty<br><a href=\"browse/"+manager_id+"\">Go back</a>")
+	else:
+		total_weight = 0
+		message= "OVERWEIGHT. Please Reset Order"
+		items = OrderDetail.objects.filter(orderID=current_order)
+		template_name = 'ASP/checkout.html'
+		order_details = []
+		for item in items:
+			weight = item.supplyID.weight * item.quantity
+			order_details.append((item, weight))
+			total_weight +=weight
+		total_weight= float(total_weight)+1.2
+		if total_weight <25:
+			return render(request, template_name, {'manager_id': manager_id, 'order_id': current_order.id, 'order_details': order_details, 'current_order': current_order,'Total_Weight': round(total_weight,2)})
+		else:
+			return render(request, template_name, {'manager_id': manager_id, 'order_id': current_order.id, 'order_details': order_details, 'current_order': current_order,'Total_Weight': message})
+#was working here
 def changeQuantity(request):
+	manager_id = request.POST.get('manager_id')
+	order_id = request.POST.get('order_id')
 	item_id = request.POST['supply_id']
 	new_quantity = request.POST['quantity']
 	order = OrderDetail.objects.get(supplyID=item_id)
 	order.quantity = new_quantity
 	order.save()
-	return HttpResponseRedirect('/ASP/checkout')
-   
-	
-
-    
+	return HttpResponseRedirect('/checkout_get/'+manager_id)
 
 def placeOrder(request):
+	manager_id = request.POST.get('manager_id')
+	owner = ClinicManager.objects.get(pk=manager_id)
 	order_id = request.POST['orderID']
 	priority = request.POST['priority']
 	try:
@@ -99,7 +132,7 @@ def placeOrder(request):
 		current_order.status = "Queued for Processing"
 		current_order.placeTime = datetime.now()
 		current_order.save()
-		return HttpResponse("Order placed!<br><a href=\"browse\">Go back</a>")
+		return HttpResponse("Order placed!<br><a href=\"browse/"+manager_id+"\">Go back</a>")
 
 def resetOrder(request):
 	ord = Order.objects.filter(owner=1).get(status="pre-place")
@@ -273,12 +306,13 @@ def registerUser(request):
 		except Location.DoesNotExist:
 			return HttpResponse("Error, clinic not found")
 		else:
+			user = User_test.objects.create(firstName=firstName, lastName=lastName, username= username, password=password, email=email, role="Clinic Manager")
 			clinic_manager = ClinicManager.objects.create(firstName=firstName, lastName=lastName, username= username, password=password, email=email)
 			clinic = Clinic.objects.create(manager=clinic_manager, name=clinic, latitude=location.latitude, longitude=location.longitude, altitude=location.altitude)
 	elif role == "Warehouse Personnel":
-		warehouse_personnel = WarehousePersonnel.objects.create(firstName=firstName, lastName=lastName, username= username, password=password, email=email)
+		user = User_test.objects.create(firstName=firstName, lastName=lastName, username= username, password=password, email=email, role="Warehouse Personnel")
 	elif role == "Dispatcher":
-		dispatcher = Dispatcher.objects.create(firstName=firstName, lastName=lastName, username= username, password=password, email=email)
+		user = User_test.objects.create(firstName=firstName, lastName=lastName, username= username, password=password, email=email, role="Dispatcher")
 	else:
 		print(role)
 		return HttpResponse("Error, cannot register")
@@ -303,9 +337,9 @@ def login(request):
 		else:
 			role = user.role
 			if role == "Clinic Manager":
-				clinic_manager = ClinicManager.objects.get()
-				template_name = "ASP/browse" #
-				return render(request, template_name)
+				clinic_manager = ClinicManager.objects.get(username=username)
+				url = "browse/"+clinic_manager.id
+				return HttpResponseRedirect(url)
 			elif role == "Warehouse Personnel":
 				template_name = "ASP/warehouseView"
 				return render(request, template_name)

@@ -7,18 +7,18 @@
 <h1>Your current order</h1>
 <a href="{% url 'ASP:browse' %}">return to selecting supplies</a><br><br>
 <table>
-	<tr><th>name</th><th>item weight(kg)</th><th>qty</th><th>total weight(kg)</th><th>Change Quantity</th><th>Modify</th></tr>
+	<tr><th>name</th><th>item weight(kg)</th><th>qty</th><th>sub-total weight(kg)</th><th>Change Quantity</th><th>Modify</th></tr>
 	{% for order_detail, weight in order_details %}
 		<tr>
 			<form action="{%url 'ASP:changeQuantity' %}" method="post" >
 				{% csrf_token %}
-				{{ order_detail.supplyID.quantity }}
 			<td>{{ order_detail.supplyID.name }}</td>
 			<td>{{ order_detail.supplyID.weight }}</td>
 			<td>{{ order_detail.quantity }}</td>
 			<td>{{ weight }}</td>
-			<td><input type="text" name="quantity"></td>
+			<td><input type="number" name="quantity" min="1" max="100"></td>
 			<td><input type="submit" value="confirm"></td>
+			<input type="hidden" name="manager_id" value="{{ manager_id }}">
 			<input type="hidden" name="supply_id" value="{{order_detail.supplyID.pk}}"> 
 
 	</form>
@@ -41,11 +41,13 @@
 			<option value="Medium">Medium</option>
 			<option value="Low">Low</option>
 		</select>
+		<input type="hidden" name="manager_id" value="{{ manager_id }}">
 		<input type="hidden" name="orderID" value="{{ current_order.id }}">
 		<input type="submit" value="Place Order">
 	</form>
 	<form action="{% url 'ASP:resetOrder' %}" method="post">
      {% csrf_token %}
+     	<input type="hidden" name="manager_id" value="{{ manager_id }}">
 		<input type="submit" value="Reset Order">
 	</form>
 
