@@ -2,7 +2,7 @@
 >Fill in the form in the google sheet to indicate who is working on what and avoid concurrency
 
 TO-DO: (arranged by importance)
-- [ ] Registration
+- [x] Registration
   - create new model for Registration information
   - view function for handling the registration given the token(link)
   - html template
@@ -37,6 +37,7 @@ TO-DO: (arranged by importance)
     - allow clinic manager to remove items in current order or adjust quantity
     - multiple same items should be displayed as one
 - [ ] Form validation (e.g. email format, deplicate username...)
+- [ ] Clinic->Location migration
 - [ ] Use HttpResponseRedirect instead for all functions that deals with http POST
 - [x] Add image field in Supply and link image files in html
 - [ ] Include supply description wherever it should be

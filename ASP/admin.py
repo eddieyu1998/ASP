@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ClinicManager, Supply, Order, OrderDetail, Clinic, Dispatcher, DistanceBetweenClinic
+from .models import *
 # Register your models here.
 
 admin.site.register(ClinicManager)
@@ -9,3 +9,6 @@ admin.site.register(OrderDetail)
 admin.site.register(Clinic)
 admin.site.register(Dispatcher)
 admin.site.register(DistanceBetweenClinic)
+admin.site.register(Location)
+admin.site.register(WarehousePersonnel)
+admin.site.register(Invitation)

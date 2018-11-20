@@ -221,5 +221,39 @@ def sendToken(request):
 	print("\ntoken", link, "sent to email address", email, "\n")
 	return HttpResponseRedirect(reverse('ASP:admin'))
 
-def registration(request):
-	pass
+def registration(request, invitation_id):
+	try:
+		invitation = Invitation.objects.get(pk=invitation_id)
+	except Invitation.DoesNotExist:
+		return HttpResponse("Error, token invalid!")
+	else:
+		email = invitation.email
+		role = invitation.role
+		template_name = "ASP/registration.html"
+		return render(request, template_name, {'email': email, 'role': role})
+
+def registerUser(request):
+	email = request.POST['email']
+	firstName = request.POST['firstName']
+	lastName = request.POST['lastName']
+	username = request.POST['username']
+	password = request.POST['password']
+	role = request.POST['role']
+	clinic = request.POST.get('clinicName', False)
+	if role == "Clinic Manager":
+		try:
+			location = Location.objects.get(name=clinic)
+		except Location.DoesNotExist:
+			return HttpResponse("Error, clinic not found")
+		else:
+			clinic_manager = ClinicManager.objects.create(firstName=firstName, lastName=lastName, username= username, password=password, email=email)
+			clinic = Clinic.objects.create(manager=clinic_manager, name=clinic, latitude=location.latitude, longitude=location.longitude, altitude=location.altitude)
+	elif role == "Warehouse Personnel":
+		warehouse_personnel = WarehousePersonnel.objects.create(firstName=firstName, lastName=lastName, username= username, password=password, email=email)
+	elif role == "Dispatcher":
+		dispatcher = Dispatcher.objects.create(firstName=firstName, lastName=lastName, username= username, password=password, email=email)
+	else:
+		print(role)
+		return HttpResponse("Error, cannot register")
+	invitation = Invitation.objects.filter(email=email).delete()
+	return HttpResponse("Registration success")

@@ -7,6 +7,7 @@ from datetime import datetime
 class ClinicManager(models.Model):
 	firstName = models.CharField(max_length=200)
 	lastName = models.CharField(max_length=200)
+	username = models.CharField(max_length=200)
 	password = models.CharField(max_length=200)
 	email = models.CharField(max_length=200)
 	def __str__(self):
@@ -49,7 +50,7 @@ class OrderDetail(models.Model): #change to orderitem
 		return f'{self.orderID.pk}: {self.supplyID.name} {self.quantity}'
 
 class Clinic(models.Model):
-	manager = models.OneToOneField(ClinicManager, on_delete=models.CASCADE)
+	manager = models.OneToOneField(ClinicManager, null=True, blank=True, on_delete=models.SET_NULL)
 	name = models.CharField(max_length=200)
 	latitude = models.DecimalField(max_digits=10, decimal_places=6)
 	longitude = models.DecimalField(max_digits=10, decimal_places=6)
@@ -59,9 +60,18 @@ class Clinic(models.Model):
 	def __lt__(self, other):
 		return True
 
+class Location(models.Model):
+	name = models.CharField(max_length=200)
+	latitude = models.DecimalField(max_digits=10, decimal_places=6)
+	longitude = models.DecimalField(max_digits=10, decimal_places=6)
+	altitude = models.IntegerField()
+	def __str__(self):
+		return f'{self.pk} {self.name}'
+
 class Dispatcher(models.Model):
 	firstName = models.CharField(max_length=200)
 	lastName = models.CharField(max_length=200)
+	username = models.CharField(max_length=200)
 	password = models.CharField(max_length=200)
 	email = models.CharField(max_length=200)
 	def __str__(self):
@@ -71,10 +81,13 @@ class DistanceBetweenClinic(models.Model):
 	clinic1 = models.ForeignKey(Clinic, on_delete=models.CASCADE, related_name='clinic1')
 	clinic2 = models.ForeignKey(Clinic, on_delete=models.CASCADE, related_name='clinic2')
 	distance = models.DecimalField(max_digits=6, decimal_places=2)
+	def __str__(self):
+		return f'{self.pk} {self.distance}'
 
 class WarehousePersonnel(models.Model):
 	firstName = models.CharField(max_length=200)
 	lastName = models.CharField(max_length=200)
+	username = models.CharField(max_length=200)
 	password = models.CharField(max_length=200)
 	email = models.CharField(max_length=200)
 	def __str__(self):
@@ -83,3 +96,5 @@ class WarehousePersonnel(models.Model):
 class Invitation(models.Model):
 	email = models.CharField(max_length=200)
 	role = models.CharField(max_length=20)
+	def __str__(self):
+		return f'{self.pk} {self.email} {self.role}'

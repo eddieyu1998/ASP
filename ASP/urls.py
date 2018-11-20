@@ -17,6 +17,7 @@ urlpatterns = [
 	path('process', views.process, name='process'),
 	path('admin', views.admin, name='admin'),
 	path('sendToken', views.sendToken, name='sendToken'),
-	path('registration/<int:id>', views.registration, name='registration'),
+	path('registration/<int:invitation_id>', views.registration, name='registration'),
 	path('addInvitation', views.addInvitation, name='addInvitation'),
+	path('registerUser', views.registerUser, name="registerUser"),
 ]
