@@ -5,10 +5,10 @@
 
 <!DOCTYPE html>
 <h1>Your current order</h1>
-<a href="{% url 'ASP:browse' %}">return to selecting supplies</a><br><br>
 <form action="{% url 'ASP:browse' %}" method="post">
 {% csrf_token %}
-	<input type="hidden" name="id" value="{{ manager_id }}">
+	<input type="hidden" name="manager_id" value="{{ manager_id }}">
+	<input type="hidden" name="category" value="all">
 	<input type="submit" value="Return">
 </form>
 <table>
@@ -49,6 +49,7 @@
 		</select>
 		<input type="hidden" name="manager_id" value="{{ manager_id }}">
 		<input type="hidden" name="orderID" value="{{ current_order.id }}">
+     	<input type="hidden" name="weight" value="{{ Total_Weight }}">
 		<input type="submit" value="Place Order">
 	</form>
 	<form action="{% url 'ASP:resetOrder' %}" method="post">

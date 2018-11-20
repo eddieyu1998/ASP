@@ -29,7 +29,7 @@ class browse(View):
 		return render(request, self.template_name, {'manager_id': manager_id, 'object_list' : objects})
 
 	def post(self, request, *args, **kwargs):
-		manager_id = request.POST.get('id')
+		manager_id = request.POST.get('manager_id')
 		category = request.POST.get('category', False)
 		search = request.POST.get('search', False)
 		if search:
@@ -39,12 +39,6 @@ class browse(View):
 		else:
 			objects = self.model.objects.filter(category=category)
 		return render(request, self.template_name, {'manager_id': manager_id, 'object_list' : objects, 'category' : category})
-
-"""class browseSupply(ListView):
-	model = Supply
-	def get_queryset(self):
-		self.category = self.kwargs['category']
-		return Supply.objects.filter(category=self.category)"""
 
 def addItem(request):
 	manager_id = request.POST.get('manager_id')
@@ -60,7 +54,8 @@ def addItem(request):
 	except OrderDetail.DoesNotExist:
 		order_detail = OrderDetail.objects.create(orderID=current_order, supplyID=selected_supply, quantity=qty)
 	else:
-		previous_select.quantity += qty
+		previous_select.quantity += int(qty)
+		previous_select.save()
 	return HttpResponseRedirect('browse/'+manager_id)
 
 def checkout(request):
@@ -71,18 +66,18 @@ def checkout(request):
 	except Order.DoesNotExist:
 		return HttpResponse("Your current order is empty<br><a href=\"browse/"+manager_id+"\">Go back</a>")
 	else:
-		total_weight = 0
+		total_weight = Decimal('0.00')
 		message= "OVERWEIGHT. Please Reset Order"
 		items = OrderDetail.objects.filter(orderID=current_order)
 		template_name = 'ASP/checkout.html'
 		order_details = []
 		for item in items:
-			weight = item.supplyID.weight * item.quantity
+			weight = Decimal(item.supplyID.weight) * item.quantity
 			order_details.append((item, weight))
-			total_weight +=weight
-		total_weight= float(total_weight)+1.2
-		if total_weight <25:
-			return render(request, template_name, {'manager_id': manager_id, 'order_id': current_order.id, 'order_details': order_details, 'current_order': current_order,'Total_Weight': round(total_weight,2)})
+			total_weight += weight
+		total_weight += Decimal('1.20')
+		if total_weight < 25:
+			return render(request, template_name, {'manager_id': manager_id, 'order_id': current_order.id, 'order_details': order_details, 'current_order': current_order,'Total_Weight': total_weight})
 		else:
 			return render(request, template_name, {'manager_id': manager_id, 'order_id': current_order.id, 'order_details': order_details, 'current_order': current_order,'Total_Weight': message})
 
@@ -93,27 +88,27 @@ def checkout_get(request, id):
 	except Order.DoesNotExist:
 		return HttpResponse("Your current order is empty<br><a href=\"browse/"+manager_id+"\">Go back</a>")
 	else:
-		total_weight = 0
+		total_weight = Decimal('0.00')
 		message= "OVERWEIGHT. Please Reset Order"
 		items = OrderDetail.objects.filter(orderID=current_order)
 		template_name = 'ASP/checkout.html'
 		order_details = []
 		for item in items:
-			weight = item.supplyID.weight * item.quantity
+			weight = Decimal(item.supplyID.weight) * item.quantity
 			order_details.append((item, weight))
-			total_weight +=weight
-		total_weight= float(total_weight)+1.2
-		if total_weight <25:
-			return render(request, template_name, {'manager_id': id, 'order_id': current_order.id, 'order_details': order_details, 'current_order': current_order,'Total_Weight': round(total_weight,2)})
+			total_weight += weight
+		total_weight += Decimal('1.20')
+		if total_weight < 25:
+			return render(request, template_name, {'manager_id': id, 'order_id': current_order.id, 'order_details': order_details, 'current_order': current_order,'Total_Weight': total_weight})
 		else:
 			return render(request, template_name, {'manager_id': id, 'order_id': current_order.id, 'order_details': order_details, 'current_order': current_order,'Total_Weight': message})
 
 def changeQuantity(request):
 	manager_id = request.POST.get('manager_id')
 	order_id = request.POST.get('order_id')
-	item_id = request.POST['supply_id']
+	supply_id = request.POST['supply_id']
 	order = Order.objects.get(pk=order_id)
-	supply = Supply.objects.get(pk=item_id)
+	supply = Supply.objects.get(pk=supply_id)
 	new_quantity = request.POST['quantity']
 	order_detail = OrderDetail.objects.get(orderID=order, supplyID=supply)
 	order_detail.quantity = new_quantity
@@ -125,6 +120,7 @@ def placeOrder(request):
 	owner = ClinicManager.objects.get(pk=manager_id)
 	order_id = request.POST['orderID']
 	priority = request.POST['priority']
+	weight = request.POST['weight']
 	try:
 		current_order = Order.objects.get(pk=order_id)
 	except Order.DoesNotExist:
@@ -132,14 +128,16 @@ def placeOrder(request):
 	else:
 		current_order.priority = priority
 		current_order.status = "Queued for Processing"
+		current_order.weight = weight
 		current_order.placeTime = datetime.now()
 		current_order.save()
 		return HttpResponse("Order placed!<br><a href=\"browse/"+manager_id+"\">Go back</a>")
 
 def resetOrder(request):
+	manager_id = request.POST.get('manager_id')
 	ord = Order.objects.filter(owner=1).get(status="pre-place")
 	ord.delete()
-	return HttpResponse("Your order has been removed!<br><a href=\"browse\">Go back</a>")
+	return HttpResponse("Your order has been removed!<br><a href=\"browse/"+manager_id+"\">Go back</a>")
 
 
 
