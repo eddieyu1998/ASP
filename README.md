@@ -14,7 +14,7 @@ TO-DO: (arranged by importance)
   - [x] view function for: view the priority queue
     - routing
     - html template
-  - [ ] view function for: remove order from the top of the queue(status changes from Queued for Processing to Processing by Warehouse)
+  - [x] view function for: remove order from the top of the queue(status changes from Queued for Processing to Processing by Warehouse)
     - routing in and out
     - html template
   - [ ] view function for: view details of the order removed
@@ -36,7 +36,9 @@ TO-DO: (arranged by importance)
     - perform weight limit check: total weight + 1.2kg < 25
     - allow clinic manager to remove items in current order or adjust quantity
     - multiple same items should be displayed as one
-- [ ] Add image field in Supply and link image files in html
+- [ ] Form validation (e.g. email format, deplicate username...)
+- [ ] Use HttpResponseRedirect instead for all functions that deals with http POST
+- [x] Add image field in Supply and link image files in html
 - [ ] Include supply description wherever it should be
 - [ ] modify the getRoute function to cater for tiebreak
 - [ ] Modify project structure (make it more modular, divide fuctionalities into apps)
