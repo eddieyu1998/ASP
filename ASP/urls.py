@@ -22,5 +22,6 @@ urlpatterns = [
 	path('addInvitation', views.addInvitation, name='addInvitation'),
 	path('registerUser', views.registerUser, name="registerUser"),
 	path('getWarehouseAction', views.getWarehouseAction, name="getWarehouseAction"),
-
+	path('registration_test', views.registration_test, name="registration_test"),
+	path('login', views.login, name="login"),
 ]

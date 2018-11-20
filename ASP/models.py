@@ -98,3 +98,13 @@ class Invitation(models.Model):
 	role = models.CharField(max_length=20)
 	def __str__(self):
 		return f'{self.pk} {self.email} {self.role}'
+
+class User_test(models.Model):
+	firstName = models.CharField(max_length=200)
+	lastName = models.CharField(max_length=200)
+	username = models.CharField(max_length=200)
+	password = models.CharField(max_length=200)
+	email = models.CharField(max_length=200)
+	role = models.CharField(max_length=20)
+	def __str__(self):
+		return f'{self.firstName} {self.lastName}'

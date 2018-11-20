@@ -10,6 +10,7 @@ import csv
 import reportlab	#for generating PDF, please run "pip install reportlab" in the virtual env
 from reportlab.pdfgen import canvas
 import io
+from django.contrib.auth import authenticate, login
 
 from ASP.models import *
 
@@ -283,6 +284,36 @@ def registerUser(request):
 		return HttpResponse("Error, cannot register")
 	invitation = Invitation.objects.filter(email=email).delete()
 	return HttpResponse("Registration success")
+
+def registration_test(request):
+	pass
+
+def login(request):
+	username = request.POST['username']
+	password = request.POST['password']
+	try:
+		user = User_test.objects.get(username=username)
+	except User_test.DoesNotExist:
+		template_name = "ASP/login.html"
+		return render(request, template_name, {'fail': True})
+	else:
+		if user.password != password:
+			template_name = "ASP/login.html"
+			return render(request, template_name, {'fail': True})
+		else:
+			role = user.role
+			if role == "Clinic Manager":
+				clinic_manager = ClinicManager.objects.get()
+				template_name = "ASP/browse" #
+				return render(request, template_name)
+			elif role == "Warehouse Personnel":
+				template_name = "ASP/warehouseView"
+				return render(request, template_name)
+			elif role == "Dispatcher":
+				template_name = "ASP/dispatcherView"
+				return render(request, template_name)
+	return HttpResponse("error")
+
 
 def getWarehouseAction(request):
 	order_id = request.POST['orderID']
