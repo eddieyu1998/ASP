@@ -1,0 +1,45 @@
+<style>
+  th, td { border: 1px solid black; }
+</style>
+
+
+<!DOCTYPE html>
+<h1>Your current order</h1>
+<a href="{% url 'ASP:browse' %}">return to selecting supplies</a><br><br>
+<table>
+	<tr><th>name</th><th>item weight(kg)</th><th>qty</th><th>total weight(kg)</th></tr>
+	{% for order_detail, weight in order_details %}
+		<tr>
+			<td>{{ order_detail.supplyID.name }}</td>
+			<td>{{ order_detail.supplyID.weight }}</td>
+			<td>{{ order_detail.quantity }}</td>
+			<td>{{ weight }}</td>
+		</tr>
+
+{% endfor %}
+</table>
+
+<p>The total weight of your order is: {{Total_Weight}} (kg)</p>
+
+
+
+<br><br>
+<div>
+	<form action="{% url 'ASP:placeOrder' %}" method="post">
+	{% csrf_token %}
+		priority
+		<select name="priority" required>
+			<option value="High">High</option>
+			<option value="Medium">Medium</option>
+			<option value="Low">Low</option>
+		</select>
+		<input type="hidden" name="orderID" value="{{ current_order.id }}">
+		<input type="submit" value="Place Order">
+	</form>
+	<form action="{% url 'ASP:resetOrder' %}" method="post">
+     {% csrf_token %}
+		<input type="submit" value="Reset Order">
+	</form>
+
+</div>
+</html>
