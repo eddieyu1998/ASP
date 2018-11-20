@@ -13,6 +13,7 @@ urlpatterns = [
 	path('dispatcherView', views.dispatcherView, name='dispatcherView'),
 	path('getDispatcherAction', views.getDispatcherAction, name="getDispatcherAction"),
 	path('warehouseView', views.warehouseView, name='warehouseView'),
+	path('removeTop', views.removeTopForProcess, name='removeTopForProcess'),
 	path('process', views.process, name='process'),
 
 ]

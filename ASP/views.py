@@ -193,5 +193,11 @@ def warehouseView(request):
 	template_name = 'ASP/warehouse_view.html'
 	return render(request, template_name, {'top_order': top_order, 'orders': priority_queue})
 
+def removeTopForProcess(request):
+	top_order = Order.objects.get(pk=request.POST['orderID'])
+	top_order.status = "Processing by Warehouse"
+	top_order.save()
+	return HttpResponseRedirect(reverse('ASP:warehouseView'))
+
 def process(request):
 	return HttpResponse("<a href=\"warehouseView\">Return, process function not yet implemented</a>")
