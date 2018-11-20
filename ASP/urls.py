@@ -15,5 +15,8 @@ urlpatterns = [
 	path('warehouseView', views.warehouseView, name='warehouseView'),
 	path('removeTop', views.removeTopForProcess, name='removeTopForProcess'),
 	path('process', views.process, name='process'),
-
+	path('admin', views.admin, name='admin'),
+	path('sendToken', views.sendToken, name='sendToken'),
+	path('registration/<int:id>', views.registration, name='registration'),
+	path('addInvitation', views.addInvitation, name='addInvitation'),
 ]

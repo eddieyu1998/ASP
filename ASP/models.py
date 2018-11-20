@@ -79,3 +79,7 @@ class WarehousePersonnel(models.Model):
 	email = models.CharField(max_length=200)
 	def __str__(self):
 		return f'{self.firstName} {self.lastName}'
+
+class Invitation(models.Model):
+	email = models.CharField(max_length=200)
+	role = models.CharField(max_length=20)

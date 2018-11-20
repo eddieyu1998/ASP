@@ -1,0 +1,35 @@
+<style>
+    th, td { border: 1px solid black; }
+</style>
+
+<h1>Admin page</h1>
+
+<p>List of invitations</p>
+<table>
+	<tr><th>email</th><th>role</th><th>invite</th></tr>
+	{% for invitation in invitations %}
+		<tr>
+			<td>{{ invitation.email }}</td>
+			<td>{{ invitation.role }}</td>
+			<td>
+				<form action="{% url 'ASP:sendToken' %}" method="post">
+				{% csrf_token %}
+					<input type="hidden" name="invitationID" value="{{ invitation.id }}">
+					<input type="submit" value="Send token">
+				</form>
+			</td>
+		</tr>
+	{% endfor %}
+</table>
+<br><br>
+Add invitation
+<form action="{% url 'ASP:addInvitation' %}" method="post">
+{% csrf_token %}
+	email <input type="text" name="email" required>
+	role <select name="role" required>
+		<option value="Clinic Manager">Clinic Manager</option>
+		<option value="Warehouse Personnel">Warehouse Personnel</option>
+		<option value="Dispatcher">Dispatcher</option>
+	</select>
+	<input type="submit" value="Add to invite list">
+</form>

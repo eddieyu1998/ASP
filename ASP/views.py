@@ -8,7 +8,7 @@ from heapq import heappush, heappop
 from decimal import *
 import csv
 
-from ASP.models import ClinicManager, Supply, Order, OrderDetail, Clinic, Dispatcher, DistanceBetweenClinic
+from ASP.models import *
 
 # Create your views here.
 def DefaultView(request):
@@ -184,13 +184,13 @@ def isGoalState(stateSequence, numOfStates):
 
 def warehouseView(request):
 	orders = Order.objects.filter(status="Queued for Processing")
-	if not orders:
-		return HttpResponse("There is currently no order.<br><a href=\"warehouseView\">Refresh</a>")
 	priority_queue = []
+	template_name = 'ASP/warehouse_view.html'
+	if not orders:
+		return render(request, template_name, {'top_order': [], 'orders': []})
 	for order in orders:
 		heappush(priority_queue, order)
 	top_order = heappop(priority_queue)
-	template_name = 'ASP/warehouse_view.html'
 	return render(request, template_name, {'top_order': top_order, 'orders': priority_queue})
 
 def removeTopForProcess(request):
@@ -201,3 +201,25 @@ def removeTopForProcess(request):
 
 def process(request):
 	return HttpResponse("<a href=\"warehouseView\">Return, process function not yet implemented</a>")
+
+def admin(request):
+	invitations = Invitation.objects.all()
+	template_name = "ASP/admin.html"
+	return render(request, template_name, {'invitations': invitations})
+
+def addInvitation(request):
+	email = request.POST['email']
+	role = request.POST['role']
+	Invitation.objects.create(email=email, role=role)
+	return HttpResponseRedirect(reverse('ASP:admin'))
+
+def sendToken(request):
+	invitation_id = request.POST['invitationID']
+	invitation = Invitation.objects.get(pk=invitation_id)
+	email = "\""+invitation.email+"\""
+	link = "\"127.0.0.1:8000/ASP/registration/"+str(invitation_id)+"\""
+	print("\ntoken", link, "sent to email address", email, "\n")
+	return HttpResponseRedirect(reverse('ASP:admin'))
+
+def registration(request):
+	pass
