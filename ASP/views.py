@@ -86,8 +86,8 @@ def checkout(request):
 		else:
 			return render(request, template_name, {'manager_id': manager_id, 'order_id': current_order.id, 'order_details': order_details, 'current_order': current_order,'Total_Weight': message})
 
-def checkout_get(request, manager_id):
-	owner = ClinicManager.objects.get(pk=manager_id)
+def checkout_get(request, id):
+	owner = ClinicManager.objects.get(pk=id)
 	try:
 		current_order = Order.objects.filter(owner=owner).get(status="pre-place")
 	except Order.DoesNotExist:
@@ -104,19 +104,21 @@ def checkout_get(request, manager_id):
 			total_weight +=weight
 		total_weight= float(total_weight)+1.2
 		if total_weight <25:
-			return render(request, template_name, {'manager_id': manager_id, 'order_id': current_order.id, 'order_details': order_details, 'current_order': current_order,'Total_Weight': round(total_weight,2)})
+			return render(request, template_name, {'manager_id': id, 'order_id': current_order.id, 'order_details': order_details, 'current_order': current_order,'Total_Weight': round(total_weight,2)})
 		else:
-			return render(request, template_name, {'manager_id': manager_id, 'order_id': current_order.id, 'order_details': order_details, 'current_order': current_order,'Total_Weight': message})
-#was working here
+			return render(request, template_name, {'manager_id': id, 'order_id': current_order.id, 'order_details': order_details, 'current_order': current_order,'Total_Weight': message})
+
 def changeQuantity(request):
 	manager_id = request.POST.get('manager_id')
 	order_id = request.POST.get('order_id')
 	item_id = request.POST['supply_id']
+	order = Order.objects.get(pk=order_id)
+	supply = Supply.objects.get(pk=item_id)
 	new_quantity = request.POST['quantity']
-	order = OrderDetail.objects.get(supplyID=item_id)
-	order.quantity = new_quantity
-	order.save()
-	return HttpResponseRedirect('/checkout_get/'+manager_id)
+	order_detail = OrderDetail.objects.get(orderID=order, supplyID=supply)
+	order_detail.quantity = new_quantity
+	order_detail.save()
+	return HttpResponseRedirect('/ASP/checkout_get/'+manager_id)
 
 def placeOrder(request):
 	manager_id = request.POST.get('manager_id')
