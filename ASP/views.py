@@ -13,6 +13,7 @@ import io
 
 from ASP.models import *
 
+
 # Create your views here.
 def DefaultView(request):
 	return HttpResponse("The view is working.")
@@ -69,11 +70,21 @@ def checkout(request):
 			total_weight +=weight
 		total_weight= float(total_weight)+1.2
 		if total_weight <25:
-		    return render(request, template_name, {'order_details': order_details, 'current_order': current_order,'Total_Weight': round(total_weight,2)})
+			return render(request, template_name, {'order_details': order_details, 'current_order': current_order,'Total_Weight': round(total_weight,2)})
 		else:
 			return render(request, template_name, {'order_details': order_details, 'current_order': current_order,'Total_Weight': message})
 
-  
+def changeQuantity(request):
+	item_id = request.POST['supply_id']
+	new_quantity = request.POST['quantity']
+	order = OrderDetail.objects.get(supplyID=item_id)
+	order.quantity = new_quantity
+	order.save()
+	return HttpResponseRedirect('/ASP/checkout')
+   
+	
+
+    
 
 def placeOrder(request):
 	order_id = request.POST['orderID']
@@ -93,6 +104,9 @@ def resetOrder(request):
 	ord = Order.objects.filter(owner=1).get(status="pre-place")
 	ord.delete()
 	return HttpResponse("Your order has been removed!<br><a href=\"browse\">Go back</a>")
+
+
+
 
 def dispatcherView(request):
 	orders = Order.objects.filter(status="Queued for Dispatch")

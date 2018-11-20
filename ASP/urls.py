@@ -10,6 +10,7 @@ urlpatterns = [
 	path('checkout', views.checkout, name='checkout'),
 	path('placeOrder', views.placeOrder, name='placeOrder'),
 	path('resetOrder', views.resetOrder, name='resetOrder'),
+	path('changeQuantity', views.changeQuantity, name='changeQuantity'),
 	path('dispatcherView', views.dispatcherView, name='dispatcherView'),
 	path('getDispatcherAction', views.getDispatcherAction, name="getDispatcherAction"),
 	path('warehouseView', views.warehouseView, name='warehouseView'),
@@ -21,4 +22,5 @@ urlpatterns = [
 	path('addInvitation', views.addInvitation, name='addInvitation'),
 	path('registerUser', views.registerUser, name="registerUser"),
 	path('getWarehouseAction', views.getWarehouseAction, name="getWarehouseAction"),
+
 ]
