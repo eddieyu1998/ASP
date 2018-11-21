@@ -10,12 +10,14 @@
 		<td>order id</td>
 		<td>order status</td>
 		<td>order priority</td>
+		<td>order weight</td>
 	</tr>
 	{% if top_order %}
 	<tr>
 		<td>{{ top_order.id }}</td>
 		<td>{{ top_order.status }}</td>
 		<td>{{ top_order.priority }}</td>
+		<td>{{ top_order.weight }}</td>
 		<td>
 			<form action="{% url 'ASP:removeTopForProcess' %}" method="post">
 			{% csrf_token %}
@@ -30,6 +32,7 @@
 		<td>{{ order.id }}</td>
 		<td>{{ order.status }}</td>
 		<td>{{ order.priority }}</td>
+		<td>{{ order.weight }}</td>
 	</tr>
 	{% endfor %}
 </table>

@@ -9,7 +9,8 @@
 		<tr>
 			<td>order id</td>
 			<td>order status</td>
-			<td>order priority</td>
+			<td>priority</td>
+			<td>weight</td>
 			<td>deliver to</td>
 		</tr>
 	{% for order in next_drone_orders %}
@@ -18,6 +19,7 @@
 			<td>{{ order.id }}</td>
 			<td>{{ order.status }}</td>
 			<td>{{ order.priority }}</td>
+			<td>{{ order.weight }}</td>
 			<td>{{ order.owner.clinic.name }}</td>
 		</tr>
 	{% endfor %}

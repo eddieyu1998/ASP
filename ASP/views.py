@@ -135,8 +135,9 @@ def placeOrder(request):
 
 def resetOrder(request):
 	manager_id = request.POST.get('manager_id')
-	ord = Order.objects.filter(owner=1).get(status="pre-place")
-	ord.delete()
+	owner = ClinicManager.objects.get(pk=manager_id)
+	order = Order.objects.filter(owner=owner).get(status="pre-place")
+	order.delete()
 	return HttpResponse("Your order has been removed!<br><a href=\"browse/"+manager_id+"\">Go back</a>")
 
 def delivered(request):
@@ -358,11 +359,9 @@ def login(request):
 				url = "browse/"+str(clinic_manager.id)
 				return HttpResponseRedirect(url)
 			elif role == "Warehouse Personnel":
-				template_name = "ASP/warehouse_view.html"
-				return render(request, template_name)
+				return HttpResponseRedirect(reverse('ASP:warehouseView'))
 			elif role == "Dispatcher":
-				template_name = "ASP/dispatcher_view.html"
-				return render(request, template_name)
+				return HttpResponseRedirect(reverse('ASP:dispatcherView'))
 	return HttpResponse("error")
 
 

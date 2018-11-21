@@ -8,7 +8,7 @@
 <div>
 <form action="{% url 'ASP:getWarehouseAction' %}" method="post">
 {% csrf_token %}
-	order id: {{ order.id }}&nbsp&nbsp&nbsp&nbsp&nbsppriority: {{ order.priority }}
+	order id: {{ order.id }}&nbsp&nbsp&nbsp&nbsp&nbsp priority: {{ order.priority }}&nbsp&nbsp&nbsp&nbsp&nbsp weight: {{ order.weight }}
 	<table>
 		<tr><th>supply name</th><th>quantity</th></tr>
 		{% for detail in details %}
