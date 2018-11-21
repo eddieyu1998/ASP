@@ -310,16 +310,22 @@ def registerUser(request):
 	username = request.POST['username']
 	password = request.POST['password']
 	role = request.POST['role']
-	clinic = request.POST.get('clinicName', False)
+	clinic_name = request.POST.get('clinicName', False)
 	if role == "Clinic Manager":
 		try:
-			location = Location.objects.get(name=clinic)
+			location = Location.objects.get(name=clinic_name)
 		except Location.DoesNotExist:
 			return HttpResponse("Error, clinic not found")
 		else:
 			user = User_test.objects.create(firstName=firstName, lastName=lastName, username= username, password=password, email=email, role="Clinic Manager")
 			clinic_manager = ClinicManager.objects.create(firstName=firstName, lastName=lastName, username= username, password=password, email=email)
-			clinic = Clinic.objects.create(manager=clinic_manager, name=clinic, latitude=location.latitude, longitude=location.longitude, altitude=location.altitude)
+			try:
+				clinic = Clinic.objects.get(name=clinic_name)
+			except Clinic.DoesNotExist:
+				clinic = Clinic.objects.create(manager=clinic_manager, name=clinic_name, latitude=location.latitude, longitude=location.longitude, altitude=location.altitude)
+			else:
+				clinic.manager = clinic_manager
+				clinic.save()
 	elif role == "Warehouse Personnel":
 		user = User_test.objects.create(firstName=firstName, lastName=lastName, username= username, password=password, email=email, role="Warehouse Personnel")
 	elif role == "Dispatcher":
@@ -339,23 +345,23 @@ def login(request):
 	try:
 		user = User_test.objects.get(username=username)
 	except User_test.DoesNotExist:
-		template_name = "ASP/login.html"
+		template_name = "registration/login.html"
 		return render(request, template_name, {'fail': True})
 	else:
 		if user.password != password:
-			template_name = "ASP/login.html"
+			template_name = "registration/login.html"
 			return render(request, template_name, {'fail': True})
 		else:
 			role = user.role
 			if role == "Clinic Manager":
 				clinic_manager = ClinicManager.objects.get(username=username)
-				url = "browse/"+clinic_manager.id
+				url = "browse/"+str(clinic_manager.id)
 				return HttpResponseRedirect(url)
 			elif role == "Warehouse Personnel":
-				template_name = "ASP/warehouseView"
+				template_name = "ASP/warehouse_view.html"
 				return render(request, template_name)
 			elif role == "Dispatcher":
-				template_name = "ASP/dispatcherView"
+				template_name = "ASP/dispatcher_view.html"
 				return render(request, template_name)
 	return HttpResponse("error")
 
