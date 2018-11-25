@@ -3,11 +3,12 @@
 
 `$ pip install Pillow` `$ pip install reportlab` in the virtual env 
 
-/login -> admin login lead to invitation management page
+**Please use the data from new_data.py**, data.py is no longer compatible due to changes in models
 
 
-/ASP/registration/invitation_id -> use the token generated in the console to register
+/login -> admin login lead to invitation management page (create admin account first: `$ manage.py createsuperuser` )
 
+/ASP/registration/invitation_id -> use the link generated in the console to register
 
 use the new account to login to their corresponding page
 
