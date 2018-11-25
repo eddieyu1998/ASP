@@ -4,7 +4,11 @@
 `$ pip install Pillow` `$ pip install reportlab` in the virtual env 
 
 /login -> admin login lead to invitation management page
+
+
 /ASP/registration/invitation_id -> use the token generated in the console to register
+
+
 use the new account to login to their corresponding page
 
 TO-DO: (arranged by importance)
