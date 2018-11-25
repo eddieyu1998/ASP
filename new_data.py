@@ -1,6 +1,3 @@
-ClinicManager(firstName="Health", lastName="Authority", username="ha", password="ha", email="ha@ha.org").save()
-Clinic(manager=ClinicManager.objects.get(email="ha@ha.org"), name="Queen Mary Hospital Drone Port", latitude=22.270257, longitude=114.131376, altitude=161).save()
-
 Supply(name="B Braun Medical Lactated Ringers 250ml", category="IV fluid", weight=0.27, image="B Braun Lactated Ringers 250ml.JPG").save()
 Supply(name="ICU Medical Normosol-R Ph 7.4 500ml", category="IV fluid", weight=0.53, image="Baxter Dextrose  NaCl 1000ml.JPG").save()
 Supply(name="Baxter Dextrose 5%, NaCl 0.33% 1000ml", category="IV fluid", weight=1.05, image="ICU Medical Normosol 500ml.JPG").save()

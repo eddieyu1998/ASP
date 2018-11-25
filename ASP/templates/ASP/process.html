@@ -12,12 +12,12 @@
 	<table>
 		<tr><th>supply name</th><th>quantity</th></tr>
 		{% for detail in details %}
-		<input type="hidden" name="supplyName" value="{{ detail.supplyID.name }}">
+		<input type="hidden" name="supply_name" value="{{ detail.supply.name }}">
 		<input type="hidden" name="quantity" value="{{ detail.quantity }}">
-		<tr><td>{{ detail.supplyID.name }}</td><td>{{ detail.quantity }}</td></tr>
+		<tr><td>{{ detail.supply.name }}</td><td>{{ detail.quantity }}</td></tr>
 		{% endfor %}
 	</table>
-	<input type="hidden" name="orderID" value="{{ order.id }}">
+	<input type="hidden" name="order_id" value="{{ order.id }}">
 	<input type="hidden" name="location" value="{{ location }}">
 	<input type="submit" name="getShippingLabel" value="get shipping label">
 	<input type="submit" name="updateStatus" value="update status">

@@ -3,6 +3,7 @@
 </style>
 
 <h1>Browse</h1>
+<!-- category -->
 <div style="float: left; margin-right: 10px">
 	<form action="{% url 'ASP:browse' %}" method="post">
 	{% csrf_token %}
@@ -11,32 +12,33 @@
 			<option value="all" {% if category == 'all' %} selected="selected" {% endif %}>all</option>
 			<option value="IV fluid" {% if category == 'IV fluid' %} selected="selected" {% endif %}>IV fluid</option>
 		</select>
-        <input type="hidden" name="manager_id" value="{{ manager_id }}">
 	</form>
 </div>
+<!-- search -->
 <div style="float: left; margin-right: 10px">
 	<form action="{% url 'ASP:browse' %}" method="post">
 	{% csrf_token %}
-        <input type="hidden" name="manager_id" value="{{ manager_id }}">
 		<input type="text" name="search" required>
+        <input type="hidden" name="category" value="{{ category }}">
 		<input type="submit" value="Search">
 	</form>
 </div>
+<!-- checkout -->
 <div style="float: left; margin-right: 50px">
     <form action="{% url 'ASP:checkout' %}" method="post">
     {% csrf_token %}
-        <input type="hidden" name="manager_id" value="{{ manager_id }}">
         <input type="submit" value="checkout">
     </form>
 </div>
+<!-- delivered -->
 <div>
     <form action="{% url 'ASP:delivered' %}" method="post">
     {% csrf_token %}
         order id: <input type="number" name="order_id" min="1" required  style="width:70px">
-        <input type="hidden" name="manager_id" value="{{manager_id}}">
         <input type="submit" value="update">   
     </form>
 </div>
+<!-- supply list -->
 <table>
   <tr><th>name</th><th>category</th><th>weight(kg)</th><th>image</th><th>quantity</th></tr>
   {% for item in object_list %}
@@ -44,13 +46,12 @@
         <td>{{ item.name }}</td>
     	<td>{{ item.category }}</td>
     	<td>{{ item.weight }}</td>
-      <td><img src = "{{ item.image.url }}" width="300" length="300"></td>
+      <td><img src = "{{ item.image.url }}" width="100" length="100"></td>
     	<td>
     		<form action="{% url 'ASP:addItem' %}" method="post">
     		{% csrf_token %}
-                <input type="hidden" name="manager_id" value="{{ manager_id }}">
-    			<input type="hidden" name="supplyID" value="{{ item.id }}">
-    			<input type="number" name="qty" min="1" max="100" required>
+    			<input type="hidden" name="supply_id" value="{{ item.id }}">
+    			<input type="number" name="qty" min="1" max="500" required>
     			<input type="submit" value="select">
     		</form>
     	</td>

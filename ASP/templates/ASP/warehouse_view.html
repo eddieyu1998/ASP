@@ -21,7 +21,7 @@
 		<td>
 			<form action="{% url 'ASP:removeTopForProcess' %}" method="post">
 			{% csrf_token %}
-				<input type="hidden" name="orderID" value="{{ top_order.id }}">
+				<input type="hidden" name="order_id" value="{{ top_order.id }}">
 				<input type="submit" value="Process">
 			</form>
 		</td>

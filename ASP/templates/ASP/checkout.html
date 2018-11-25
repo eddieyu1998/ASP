@@ -7,37 +7,35 @@
 <h1>Your current order</h1>
 <form action="{% url 'ASP:browse' %}" method="post">
 {% csrf_token %}
-	<input type="hidden" name="manager_id" value="{{ manager_id }}">
 	<input type="hidden" name="category" value="all">
 	<input type="submit" value="Return">
 </form>
+
 <table>
 	<tr><th>name</th><th>item weight(kg)</th><th>qty</th><th>sub-total weight(kg)</th><th>Change Quantity</th><th>Modify</th></tr>
 	{% for order_detail, weight in order_details %}
 		<tr>
 			<form action="{%url 'ASP:changeQuantity' %}" method="post" >
-				{% csrf_token %}
-			<td>{{ order_detail.supplyID.name }}</td>
-			<td>{{ order_detail.supplyID.weight }}</td>
+			{% csrf_token %}
+			<td>{{ order_detail.supply.name }}</td>
+			<td>{{ order_detail.supply.weight }}</td>
 			<td>{{ order_detail.quantity }}</td>
 			<td>{{ weight }}</td>
-			<td><input type="number" name="quantity" min="1" max="100"></td>
+			<td><input type="number" name="quantity" min="1" max="500"></td>
 			<td><input type="submit" value="confirm"></td>
-			<input type="hidden" name="manager_id" value="{{ manager_id }}">
-			<input type="hidden" name="order_id" value="{{ order_id }}">
-			<input type="hidden" name="supply_id" value="{{order_detail.supplyID.pk}}"> 
+			<input type="hidden" name="order_id" value="{{ current_order.id }}">
+			<input type="hidden" name="supply_id" value="{{order_detail.supply.pk}}"> 
 
-	</form>
+			</form>
 		</tr>
-
-{% endfor %}
+	{% endfor %}
 </table>
 
 <p>The total weight of your order is: {{Total_Weight}} (kg)</p>
+{% if overweight %}
+	<p>Overweight!! Please remove some items or change the quantity</p>
+{% endif %}
 
-
-
-<br><br>
 <div>
 	<form action="{% url 'ASP:placeOrder' %}" method="post">
 	{% csrf_token %}
@@ -47,14 +45,17 @@
 			<option value="Medium">Medium</option>
 			<option value="Low">Low</option>
 		</select>
-		<input type="hidden" name="manager_id" value="{{ manager_id }}">
-		<input type="hidden" name="orderID" value="{{ current_order.id }}">
+		<input type="hidden" name="order_id" value="{{ current_order.id }}">
      	<input type="hidden" name="weight" value="{{ Total_Weight }}">
-		<input type="submit" value="Place Order">
+		{% if overweight %}
+			<button type="button" disabled>Place Order</button>
+		{% else %}
+			<input type="submit" value="Place Order">
+		{% endif %}
 	</form>
+
 	<form action="{% url 'ASP:resetOrder' %}" method="post">
      {% csrf_token %}
-     	<input type="hidden" name="manager_id" value="{{ manager_id }}">
 		<input type="submit" value="Reset Order">
 	</form>
 
