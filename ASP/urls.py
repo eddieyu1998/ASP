@@ -19,7 +19,8 @@ urlpatterns = [
 	path('placeOrder', views.placeOrder, name='placeOrder'),
 	path('resetOrder', views.resetOrder, name='resetOrder'),
 	path('changeQuantity', views.changeQuantity, name='changeQuantity'),
-	path('delivered', views.delivered, name="delivered"),
+	path('viewOrders', views.viewOrders, name='viewOrders'),
+	path('updateOrder', views.updateOrder, name="updateOrder"),
 
 	path('warehouseView', views.warehouseView, name='warehouseView'),
 	path('removeTop', views.removeTopForProcess, name='removeTopForProcess'),

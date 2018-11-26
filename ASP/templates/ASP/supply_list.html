@@ -30,12 +30,11 @@
         <input type="submit" value="checkout">
     </form>
 </div>
-<!-- delivered -->
+<!-- view order -->
 <div style="float: left; margin-right: 10px">
-    <form action="{% url 'ASP:delivered' %}" method="post">
+    <form action="{% url 'ASP:viewOrders' %}" method="post">
     {% csrf_token %}
-        order id: <input type="number" name="order_id" min="1" required  style="width:70px">
-        <input type="submit" value="update">   
+        <input type="submit" value="View Orders">   
     </form>
 </div>
 <!-- user info -->

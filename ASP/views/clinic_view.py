@@ -99,16 +99,32 @@ def resetOrder(request):
 	order.delete()
 	return HttpResponse("Your order has been removed!<br><a href=\"browse\">Go back</a>")
 
-def delivered(request):
+def viewOrders(request):
+	user = request.user
+	clinic_manager = ClinicManager.objects.get(user=user)
+	orders = Order.objects.filter(owner=clinic_manager).exclude(status="Delivered")
+	order_details = []
+	for order in orders:
+		details = order.orderdetail_set.all()
+		order_details.append((order, details))
+	template_name = "ASP/view_orders.html"
+	return render(request, template_name, {'order_details':order_details})
+
+def updateOrder(request):
 	user = request.user
 	clinic_manager = ClinicManager.objects.get(user=user)
 	order_id = request.POST.get('order_id')
 	try:
 		order = Order.objects.get(pk=order_id, owner=clinic_manager)
 	except Order.DoesNotExist:
-		return HttpResponse("Order number not found.<br><a href=\"browse\">Return</a>")
+		return HttpResponse("Error, order not found.<br><a href=\"browse\">Return</a>")
 	else:
-		order.status = "Delivered"
-		order.deliveredTime = datetime.now()
-		order.save()
-		return HttpResponse("Order status has been updated to deliverd.<br><a href=\"browse\">Return</a>")
+		status = request.POST.get('status')
+		if status == "cancel":
+			order.delete()
+			return HttpResponse("Order status has been deleted.<br><a href=\"viewOrders\">Return</a>")
+		elif status == "receive":
+			order.status = "Delivered"
+			order.deliveredTime = datetime.now()
+			order.save()
+			return HttpResponse("Order status has been updated to deliverd.<br><a href=\"viewOrders\">Return</a>")
