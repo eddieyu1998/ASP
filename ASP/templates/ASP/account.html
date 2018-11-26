@@ -1,0 +1,27 @@
+<h1>Account info</h1>
+
+{% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+      <li class="{{ message.tags }}">{{ message }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+<form action="{% url 'ASP:browse' %}" method="post">
+{% csrf_token %}
+	<input type="hidden" name="category" value="all">
+	<input type="submit" value="Return">
+</form>
+
+<form action="{% url 'ASP:account' %}" method="post">
+{% csrf_token %}
+	{{ form.as_p }}
+	<p>Your role: {{ role }}</p>
+	<p><input type="submit" value="Save" style="float: left; margin-right: 20px;"></p>
+</form>
+
+<form action="{% url 'ASP:changePassword' %}" method="post">
+{% csrf_token %}
+	<input type="submit" value="Change password">
+</form>

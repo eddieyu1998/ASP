@@ -2,9 +2,11 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from datetime import datetime
-from django.contrib.auth import authenticate, login
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.contrib.auth.models import User, Group
-from ASP.forms import RegistrationForm
+from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
+from ASP.forms import RegistrationForm, UpdateInfoForm
 from ASP.models import *
 
 def loggedIn(request):
@@ -102,3 +104,41 @@ def registerUser(request):
 		errors = form.errors
 		template_name = "registration/registration.html"
 		return render(request, template_name, {'invitation_id': invitation_id, 'email': email, 'role': role, 'form': form, 'errors': errors})
+
+def account(request):
+	user = request.user
+	if request.method == "POST":
+		form = UpdateInfoForm(request.POST, instance=user)
+		if form.is_valid:
+			form.save()
+			messages.success(request, "Info updated")
+			return HttpResponseRedirect(reverse('ASP:account'))
+	else:
+		form = UpdateInfoForm(instance=request.user)
+
+	if user.groups.filter(name="Clinic Manager").count():
+		role = "Clinic Manager"
+	elif user.groups.filter(name="Warehouse Personnel").count():
+		role = "Warehouse Personnel"
+	elif user.groups.filter(name="Dispatcher").count():
+		role = "Dispatcher"
+	template_name = "ASP/account.html"
+	return render(request, template_name, {'form': form, 'role': role})
+
+def changePassword(request):
+	user = request.user
+	form = PasswordChangeForm(user=request.user)
+	template_name = "ASP/change_password.html"
+	return render(request, template_name, {'form': form})
+
+def passwordSuccess(request):
+	user = request.user
+	form = PasswordChangeForm(request.user, request.POST)
+	if form.is_valid():
+		user = form.save()
+		update_session_auth_hash(request, user)
+		messages.success(request, "Password updated")
+		return HttpResponseRedirect(reverse('ASP:account'))
+	else:
+		template_name = "ASP/change_password.html"
+		return render(request, template_name, {'form': form})

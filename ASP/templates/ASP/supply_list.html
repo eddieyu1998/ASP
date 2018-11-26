@@ -24,19 +24,23 @@
 	</form>
 </div>
 <!-- checkout -->
-<div style="float: left; margin-right: 50px">
+<div style="float: left; margin-right: 10px">
     <form action="{% url 'ASP:checkout' %}" method="post">
     {% csrf_token %}
         <input type="submit" value="checkout">
     </form>
 </div>
 <!-- delivered -->
-<div>
+<div style="float: left; margin-right: 10px">
     <form action="{% url 'ASP:delivered' %}" method="post">
     {% csrf_token %}
         order id: <input type="number" name="order_id" min="1" required  style="width:70px">
         <input type="submit" value="update">   
     </form>
+</div>
+<!-- user info -->
+<div style="float: left; margin-right: 10px">
+    <a href="{% url 'ASP:account' %}">Account</a>
 </div>
 <!-- supply list -->
 <table>

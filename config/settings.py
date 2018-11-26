@@ -125,3 +125,5 @@ MEDIA_ROOT = os.path.join(STATIC_ROOT,'media')
 MEDIA_URL = '/media/'
 
 LOGIN_REDIRECT_URL = '/ASP/loggedIn'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

@@ -9,6 +9,9 @@ urlpatterns = [
 	path('addInvitation', views.addInvitation, name='addInvitation'),
 	path('registration/<int:invitation_id>', views.registration, name='registration'),
 	path('registerUser', views.registerUser, name="registerUser"),
+	path('account', views.account, name="account"),
+	path('changePassword', views.changePassword, name="changePassword"),
+	path('passwordSuccess', views.passwordSuccess, name="passwordSuccess"),
 
 	path('browse', views.browse, name='browse'),
 	path('addItem', views.addItem, name='addItem'),
