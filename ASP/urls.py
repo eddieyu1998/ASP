@@ -29,4 +29,5 @@ urlpatterns = [
 
 	path('dispatcherView', views.dispatcherView, name='dispatcherView'),
 	path('getDispatcherAction', views.getDispatcherAction, name="getDispatcherAction"),
+	path('shippingLabel/<int:order_id>', views.shippingLabel, name="shippingLabel"),
 ]

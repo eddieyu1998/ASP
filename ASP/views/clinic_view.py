@@ -3,6 +3,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from datetime import datetime
 from decimal import *
+import reportlab	#for generating PDF, please run "pip install reportlab" in the virtual env
+from reportlab.pdfgen import canvas
+import io
 
 from ASP.models import *
 
@@ -128,3 +131,25 @@ def updateOrder(request):
 			order.deliveredTime = datetime.now()
 			order.save()
 			return HttpResponse("Order status has been updated to deliverd.<br><a href=\"viewOrders\">Return</a>")
+
+def shippingLabel(request, order_id):
+	order = Order.objects.get(pk=order_id)
+	location = order.location
+	order_details = OrderDetail.objects.filter(order=order)
+	buffer = io.BytesIO()
+	p = canvas.Canvas(buffer)
+	p.drawString(80, 800, "order id: "+str(order_id))
+	p.drawString(80, 775, "location: "+location.name)
+	p.drawString(80, 725, "list of items:")
+	y = 700
+	for detail in order_details:
+		p.drawString(80, y, detail.supply.name+": "+str(detail.quantity))
+		y -= 25
+	p.showPage()
+	p.save()
+	pdf = buffer.getvalue()
+	buffer.close()
+	response = HttpResponse(content_type='application/pdf')
+	response['Content-Disposition'] = 'attachment; filename="shippinglabel.pdf"'
+	response.write(pdf)
+	return response

@@ -20,10 +20,7 @@ def dispatcherView(request):
 	current_weight = Decimal('0.00')
 	while priority_queue:
 		next_order = heappop(priority_queue)
-		order_weight = Decimal('0.00')
-		for item in OrderDetail.objects.filter(order=next_order):
-			order_weight +=  item.quantity * Decimal(item.supply.weight)
-		order_weight += Decimal('1.20')
+		order_weight = next_order.weight
 		if current_weight + order_weight > weight_limit:
 			print("Current weight:", current_weight)
 			print("next_order_weight:", order_weight)
@@ -70,11 +67,28 @@ def getCSV(orders):
 	return response
 
 def updateStatuses(orders):
+	clinic_managers = []
 	for order_id in orders:
 		order = Order.objects.get(pk=order_id)
 		order.status = "Dispatched"
 		order.dispatchTime = datetime.now()
 		order.save()
+		found = False
+		for user, order_list in clinic_managers:
+			if order.owner == user:
+				found = True
+				order_list.append(order_id)
+				break
+		if not found:
+			clinic_managers.append((order.owner, [order_id]))
+	for clinic_manager, order_list in clinic_managers:
+		email = clinic_manager.user.email
+		print("Dispatch notification to email: ",email)
+		print("PDFs for your orders:")
+		for order in order_list:
+			link = "'127.0.0.1:8000/ASP/shippingLabel/"+str(order)+"'"
+			print(link)
+		print("\n")
 	return
 
 #Ask George
