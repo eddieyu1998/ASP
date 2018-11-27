@@ -102,7 +102,7 @@ def resetOrder(request):
 def viewOrders(request):
 	user = request.user
 	clinic_manager = ClinicManager.objects.get(user=user)
-	orders = Order.objects.filter(owner=clinic_manager).exclude(status="Delivered")
+	orders = Order.objects.filter(owner=clinic_manager).exclude(status="Delivered").exclude(status="pre-place")
 	order_details = []
 	for order in orders:
 		details = order.orderdetail_set.all()
