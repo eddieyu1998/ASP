@@ -8,11 +8,23 @@
   </ul>
 {% endif %}
 
-<form action="{% url 'ASP:browse' %}" method="post">
-{% csrf_token %}
-	<input type="hidden" name="category" value="all">
-	<input type="submit" value="Return">
-</form>
+{% if role == "Clinic Manager" %}
+	<form action="{% url 'ASP:browse' %}" method="post">
+	{% csrf_token %}
+		<input type="hidden" name="category" value="all">
+		<input type="submit" value="Return">
+	</form>
+{% elif role == "Warehouse Personnel" %}
+	<form action="{% url 'ASP:warehouseView' %}" method="post">
+	{% csrf_token %}
+		<input type="submit" value="Return">
+	</form>
+{% elif role == "Dispatcher" %}
+	<form action="{% url 'ASP:dispatcherView' %}" method="post">
+	{% csrf_token %}
+		<input type="submit" value="Return">
+	</form>
+{% endif %}
 
 <form action="{% url 'ASP:account' %}" method="post">
 {% csrf_token %}

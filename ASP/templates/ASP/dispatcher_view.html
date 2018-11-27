@@ -3,6 +3,9 @@
 </style>
 
 <h1>Orders to be loaded on next drone</h1>
+
+<a href="{% url 'ASP:account' %}">Account</a><br><br>
+
 <form action="{% url 'ASP:getDispatcherAction' %}" method="post">
 {% csrf_token %}
 	<table>
