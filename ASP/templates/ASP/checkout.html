@@ -21,7 +21,7 @@
 			<td>{{ order_detail.supply.weight }}</td>
 			<td>{{ order_detail.quantity }}</td>
 			<td>{{ weight }}</td>
-			<td><input type="number" name="quantity" min="1" max="500"></td>
+			<td><input type="number" name="quantity" min="1" max="500" required></td>
 			<td><input type="submit" value="confirm"></td>
 			<input type="hidden" name="order_id" value="{{ current_order.id }}">
 			<input type="hidden" name="supply_id" value="{{order_detail.supply.pk}}"> 
