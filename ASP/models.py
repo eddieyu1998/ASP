@@ -12,6 +12,8 @@ class Location(models.Model):
 	altitude = models.IntegerField()
 	def __str__(self):
 		return f'{self.pk} {self.name}'
+	def __lt__(self, other):
+		return True
 
 class DistanceBetweenLocation(models.Model):
 	location1 = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='location1')
@@ -76,4 +78,4 @@ class OrderDetail(models.Model):
 	supply = models.ForeignKey(Supply, on_delete=models.CASCADE)
 	quantity = models.IntegerField()
 	def __str__(self):
-		return f'{self.orderID.pk}: {self.supplyID.name} {self.quantity}'
+		return f'{self.order.pk}: {self.supply.name} {self.quantity}'

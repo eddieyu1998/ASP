@@ -125,7 +125,7 @@ def updateOrder(request):
 		status = request.POST.get('status')
 		if status == "cancel":
 			order.delete()
-			return HttpResponse("Order status has been deleted.<br><a href=\"viewOrders\">Return</a>")
+			return HttpResponse("Order has been deleted.<br><a href=\"viewOrders\">Return</a>")
 		elif status == "receive":
 			order.status = "Delivered"
 			order.deliveredTime = datetime.now()

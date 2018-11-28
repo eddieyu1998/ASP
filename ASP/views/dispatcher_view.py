@@ -54,11 +54,15 @@ def getCSV(orders):
 				break
 		if not found:
 			locations.append((location,[order]))
-	route = getRoute(locations)
+	result = getRoute(locations)
+	print("result:", result)
+	route = []
+	home = result.pop()
+	for location, orders in result:
+		route.append(location)
+		print("location:", location.name, " orders:", orders)
+	route.append(home)
 	print(route)
-	for i in route:
-		print(i[0], ":", i[1])
-	return HttpResponseRedirect(reverse('ASP:dispatcherView'))
 	response = HttpResponse(content_type='text/csv')
 	response['Content-Disposition'] = 'attachment; filename="itinerary.csv"'
 	writer = csv.writer(response)
@@ -91,32 +95,55 @@ def updateStatuses(orders):
 		print("\n")
 	return
 
-#Ask George
 def getRoute(locations):	#[(location, [order1, order2]), ...]
 	frontier = []
 	numOfStates = len(locations)
 	startState = Location.objects.get(name="Queen Mary Hospital Drone Port")
 	heappush(frontier, (Decimal('0.00'), [(startState, [])]))
 	shortest = 99999999999999999
-	results = []
+	results = []	#[(location1, [order1, order2]), (location2, [order3]), ...]
 	while frontier:
 		node = heappop(frontier)
 		if isGoalState(node[1], numOfStates):
 			if node[0] < shortest:
 				shortest = node[0]
 				node[1].pop(0)
-				results = [node]
+				results = [node[1]]
 			elif node[0] == shortest:
 				node[1].pop(0)
-				results.append(node)
+				results.append(node[1])
 			else:
-				"""
 				for location_index in range(numOfStates):
 					tiebreaker = []
-					for i, result in enumerate(results):
-						state = result[1][location_index]
-						for order in state[1]:"""
-				return results
+					for result in results:
+						location = result[location_index][0]
+						orders = result[location_index][1]
+						high = 0
+						medium = 0
+						low = 0
+						for order in orders:
+							priority = order.priority
+							if priority == "High":
+								high += 1
+							elif priority == "Medium":
+								medium += 1
+							elif priority == "Low":
+								low += 1
+						tiebreaker.append((high, medium, low))
+					highest = (0,0,0)
+					highest_index = 0
+					tie_count = 0
+					for i, tie in enumerate(tiebreaker):
+						if tie > highest:
+							highest = tie
+							highest_index = i
+							tie_count = 0
+						elif tie == highest:
+							tie_count = 1
+					if tie_count == 0:
+						return results[highest_index]
+				#all locations have same priority
+				return results[0]
 		elif len(node[1]) > numOfStates:
 			location1 = node[1][-1][0]
 			distance = DistanceBetweenLocation.objects.get(location1=location1, location2=startState)
