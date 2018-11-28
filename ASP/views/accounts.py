@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from datetime import datetime
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, update_session_auth_hash
+from django.contrib.auth import authenticate, login, logout as d_logout, update_session_auth_hash
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
 from ASP.forms import RegistrationForm, UpdateInfoForm
@@ -142,3 +142,7 @@ def passwordSuccess(request):
 	else:
 		template_name = "ASP/change_password.html"
 		return render(request, template_name, {'form': form})
+
+def logout(request):
+	d_logout(request)
+	return HttpResponseRedirect(reverse('login'))

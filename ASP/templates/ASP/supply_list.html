@@ -41,7 +41,11 @@
 <div style="float: left; margin-right: 10px">
     <a href="{% url 'ASP:account' %}">Account</a>
 </div>
+<div>
+    <a href="{% url 'ASP:logout' %}">Logout</a>
+</div>
 <!-- supply list -->
+<div style="clear:left">
 <table>
   <tr><th>name</th><th>category</th><th>weight(kg)</th><th>image</th><th>quantity</th></tr>
   {% for item in object_list %}
@@ -61,3 +65,4 @@
 	</tr>
   {% endfor %}
 </table>
+</div>

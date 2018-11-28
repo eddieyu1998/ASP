@@ -12,7 +12,8 @@ urlpatterns = [
 	path('account', views.account, name="account"),
 	path('changePassword', views.changePassword, name="changePassword"),
 	path('passwordSuccess', views.passwordSuccess, name="passwordSuccess"),
-
+	path('logout', views.logout, name="logout"),
+	
 	path('browse', views.browse, name='browse'),
 	path('addItem', views.addItem, name='addItem'),
 	path('checkout', views.checkout, name='checkout'),
@@ -30,4 +31,5 @@ urlpatterns = [
 	path('dispatcherView', views.dispatcherView, name='dispatcherView'),
 	path('getDispatcherAction', views.getDispatcherAction, name="getDispatcherAction"),
 	path('shippingLabel/<int:order_id>', views.shippingLabel, name="shippingLabel"),
+
 ]
