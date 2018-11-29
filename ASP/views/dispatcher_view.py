@@ -108,7 +108,7 @@ def getRoute(locations):	#[(location, [order1, order2]), ...]
 			if node[0] < shortest:
 				shortest = node[0]
 				node[1].pop(0)
-				results = [node[1]]
+				results = node[1]
 			elif node[0] == shortest:
 				node[1].pop(0)
 				results.append(node[1])
