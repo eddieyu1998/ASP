@@ -11,7 +11,7 @@ from ASP.models import *
 def dispatcherView(request):
 	orders = Order.objects.filter(status="Queued for Dispatch")
 	if not orders:
-		return HttpResponse("There is currently no order.<br><a href=\"dispatcherView\">Refresh</a>")
+		return HttpResponse("There is currently no order.<br><a href=\"dispatcherView\" style='margin-right:20px'>Refresh</a><a href=\"logout\" style=\"margin-right:40px\">Logout</a>")
 	priority_queue = []
 	for order in orders:
 		heappush(priority_queue, order)
