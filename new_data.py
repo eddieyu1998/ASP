@@ -1,6 +1,7 @@
 Supply(name="B Braun Medical Lactated Ringers 250ml", category="IV fluid", weight=0.27, image="B Braun Lactated Ringers 250ml.JPG").save()
 Supply(name="ICU Medical Normosol-R Ph 7.4 500ml", category="IV fluid", weight=0.53, image="Baxter Dextrose  NaCl 1000ml.JPG").save()
 Supply(name="Baxter Dextrose 5%, NaCl 0.33% 1000ml", category="IV fluid", weight=1.05, image="ICU Medical Normosol 500ml.JPG").save()
+Supply(name="Baxter Sodium Chloride 0.9% 500ml", category="IV fluid", weight=0.54, image="Baxter Sodium Chloride 500ml.jpg").save()
 
 Location(name="Mui Wo General Out-patient Clinic", latitude=22.266040, longitude=113.997882, altitude=17).save()
 Location(name="North Lamma General Out-patient Clinic", latitude=22.224295, longitude=114.111098, altitude=20).save()

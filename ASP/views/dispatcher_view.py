@@ -24,7 +24,6 @@ def dispatcherView(request):
 		if current_weight + order_weight > weight_limit:
 			print("Current weight:", current_weight)
 			print("next_order_weight:", order_weight)
-			break
 		else:
 			next_drone_orders.append(next_order)
 			current_weight += order_weight
@@ -108,7 +107,7 @@ def getRoute(locations):	#[(location, [order1, order2]), ...]
 			if node[0] < shortest:
 				shortest = node[0]
 				node[1].pop(0)
-				results = node[1]
+				results = [node[1]]
 			elif node[0] == shortest:
 				node[1].pop(0)
 				results.append(node[1])
@@ -158,7 +157,7 @@ def getRoute(locations):	#[(location, [order1, order2]), ...]
 					except DistanceBetweenLocation.DoesNotExist:
 						distance = DistanceBetweenLocation.objects.get(location1=location2, location2=location1)
 					heappush(frontier, (node[0]+distance.distance, node[1]+[(location2, orders)]))
-	return results
+	return results[0]
 
 def isGoalState(stateSequence, numOfStates):
 	if len(stateSequence) > numOfStates+1:
